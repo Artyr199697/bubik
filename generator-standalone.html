@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор объявлений - Автономный</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 32px;
+        }
+        .info-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #155724;
+        }
+        .info-box strong { color: #0f4221; }
+        .input-group { margin-bottom: 25px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: monospace;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        input[type="number"] {
+            width: 200px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-generate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-download {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            flex: 1;
+        }
+        .btn-download:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(245, 87, 108, 0.4);
+        }
+        .btn-download:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-txt {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            color: white;
+            flex: 1;
+        }
+        .btn-txt:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(86, 171, 47, 0.4);
+        }
+        .btn-txt:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .output-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+        .output-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+        #output {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            max-height: 500px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .stat-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            flex: 1;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 12px;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Генератор объявлений - Автономный</h1>
+
+        <div class="info-box">
+            <strong>✨ PRO версия со встроенными базами</strong><br>
+            <strong>500 имен × 357 отчеств × 671 фамилий = 119,773,500</strong> уникальных комбинаций ФИО!<br>
+            <strong>Артикулы:</strong> Английские буквы, более 10,000,000 вариаций!<br>
+            <strong>Экспорт:</strong> С HTML-тегами или без (чистый текст)
+        </div>
+
+        <div class="input-group">
+            <label for="template">HTML шаблон объявления:</label>
+            <textarea id="template" rows="15" placeholder="Вставьте HTML описание товара..."></textarea>
+        </div>
+
+        <div class="input-group">
+            <label for="count">Количество объявлений:</label>
+            <input type="number" id="count" min="1" max="10000" value="10" />
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-generate" onclick="generate()">Генерировать</button>
+            <button class="btn-download" id="downloadHtmlBtn" onclick="downloadWithHTML()" disabled>Скачать с HTML</button>
+            <button class="btn-txt" id="downloadTxtBtn" onclick="downloadPlainText()" disabled>Скачать текст (без HTML)</button>
+        </div>
+
+        <div class="output-section" id="outputSection" style="display: none;">
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="generatedCount">0</div>
+                    <div class="stat-label">Сгенерировано объявлений</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalChars">0</div>
+                    <div class="stat-label">Всего символов</div>
+                </div>
+            </div>
+
+            <div class="output-info">
+                ✅ Объявления готовы! Выберите формат скачивания: с HTML-тегами или без.
+            </div>
+            <div id="output"></div>
+        </div>
+    </div>
+
+    <script src="data-embedded.js"></script>
+    <script>
+        let generatedText = '';
+        let generatedTextPlain = '';
+
+        // Удаление HTML-тегов
+        function stripHTML(html) {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            return temp.textContent || temp.innerText || '';
+        }
+
+        // Генерация уникального артикула (английские буквы)
+        function generateUniqueArticle(usedArticles) {
+            let article;
+            let attempts = 0;
+            const maxAttempts = 100000;
+
+            do {
+                const format = Math.floor(Math.random() * 10);
+
+                switch(format) {
+                    case 0: article = `PR${randLetters(2)}${rand4()}-PL${randLetters(1)}-${rand4()}`; break;
+                    case 1: article = `AR${randLetters(1)}${rand4()}-PK${randLetters(1)}-${rand4()}`; break;
+                    case 2: article = `PR${randLetters(2)}${rand4()}-PL${randLetters(4)}`; break;
+                    case 3: article = `AR${randLetters(2)}${rand2()}-PK${randLetters(2)}${rand2()}-${rand4()}`; break;
+                    case 4: article = `PR${rand6()}-PL${rand4()}`; break;
+                    case 5: article = `AR${randLetters(1)}${rand1()}${randLetters(1)}${rand1()}${randLetters(1)}${rand1()}-PK${randLetters(1)}${rand3()}`; break;
+                    case 6: article = `PR${randLetters(2)}-${rand4()}-PL${randLetters(2)}-${rand4()}`; break;
+                    case 7: article = `AR${rand3()}${randLetters(1)}${rand3()}-PK${rand2()}${randLetters(1)}${rand2()}`; break;
+                    case 8: article = `PR${randLetters(2)}${rand4()}${randLetters(2)}-${rand4()}`; break;
+                    case 9: article = `AR${rand1()}${randLetters(1)}${rand1()}${randLetters(1)}${rand1()}${randLetters(1)}-PL${rand4()}`; break;
+                }
+
+                attempts++;
+                if (attempts >= maxAttempts) {
+                    console.error('Превышен лимит попыток генерации артикула');
+                    break;
+                }
+            } while (usedArticles.has(article));
+
+            usedArticles.add(article);
+            return article;
+        }
+
+        // Генерация уникального ФИО
+        function generateUniqueName(usedNames) {
+            let fullName;
+            let attempts = 0;
+            const maxAttempts = 100000;
+
+            do {
+                const firstName = FIRSTNAMES[Math.floor(Math.random() * FIRSTNAMES.length)];
+                const patronymic = PATRONYMICS[Math.floor(Math.random() * PATRONYMICS.length)];
+                const lastName = LASTNAMES[Math.floor(Math.random() * LASTNAMES.length)];
+                fullName = `${firstName} ${patronymic} ${lastName}`;
+
+                attempts++;
+                if (attempts >= maxAttempts) {
+                    console.error('Превышен лимит попыток генерации имени');
+                    break;
+                }
+            } while (usedNames.has(fullName));
+
+            usedNames.add(fullName);
+            return fullName;
+        }
+
+        // Вспомогательные функции
+        function randLetters(count) {
+            let result = '';
+            for (let i = 0; i < count; i++) {
+                result += String.fromCharCode(65 + Math.floor(Math.random() * 26));
+            }
+            return result;
+        }
+
+        function rand1() { return Math.floor(Math.random() * 10); }
+        function rand2() { return String(Math.floor(10 + Math.random() * 90)); }
+        function rand3() { return String(Math.floor(100 + Math.random() * 900)); }
+        function rand4() { return String(Math.floor(1000 + Math.random() * 9000)); }
+        function rand6() { return String(Math.floor(100000 + Math.random() * 900000)); }
+
+        function generate() {
+            const template = document.getElementById('template').value;
+            const count = parseInt(document.getElementById('count').value);
+
+            if (!template.trim()) {
+                alert('Пожалуйста, введите HTML шаблон!');
+                return;
+            }
+
+            if (count < 1 || count > 10000) {
+                alert('Количество объявлений должно быть от 1 до 10000!');
+                return;
+            }
+
+            const usedArticles = new Set();
+            const usedNames = new Set();
+            let results = [];
+            let resultsPlain = [];
+
+            for (let i = 0; i < count; i++) {
+                const article = generateUniqueArticle(usedArticles);
+                const manager = generateUniqueName(usedNames);
+
+                let text = template;
+
+                // Заменяем артикул и имя
+                text = text.replace(
+                    /Артикул:[^\n]*\nСтарший:[^\n]*/,
+                    `Артикул: ${article}\nСтарший: ${manager}`
+                );
+
+                results.push(text);
+
+                // Версия без HTML
+                resultsPlain.push(stripHTML(text));
+            }
+
+            // Соединяем с разделителями
+            generatedText = results.join('\n\n\n\n');
+            generatedTextPlain = resultsPlain.join('\n\n\n\n');
+
+            // Показываем результат
+            document.getElementById('output').textContent = generatedText;
+            document.getElementById('outputSection').style.display = 'block';
+            document.getElementById('downloadHtmlBtn').disabled = false;
+            document.getElementById('downloadTxtBtn').disabled = false;
+            document.getElementById('generatedCount').textContent = count;
+            document.getElementById('totalChars').textContent = generatedText.length.toLocaleString();
+
+            document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function downloadWithHTML() {
+            if (!generatedText) {
+                alert('Сначала сгенерируйте объявления!');
+                return;
+            }
+
+            const blob = new Blob([generatedText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `obyavleniya_html_${new Date().getTime()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadPlainText() {
+            if (!generatedTextPlain) {
+                alert('Сначала сгенерируйте объявления!');
+                return;
+            }
+
+            const blob = new Blob([generatedTextPlain], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `obyavleniya_text_${new Date().getTime()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Автозаполнение шаблона
+        window.addEventListener('DOMContentLoaded', function() {
+            const defaultTemplate = `<p><strong>🚀 ChatGPT Plus — официальная подписка с GPT-5.1 и Sora 2</strong></p>
+
+<p>Оформляю подписку на ваш личный аккаунт OpenAI. Активация за 10-15 минут.<br>
+<strong>Важно:</strong> 13 ноября 2025 вышел GPT-5.1 — самая свежая версия. Получаете последнее обновление.</p>
+
+<p><br></p>
+
+<p><strong>🧠 Что такое GPT-5.1:</strong></p>
+<ul>
+<li><strong>GPT-5.1 Instant</strong> — быстрые ответы: тексты, код, резюме</li>
+<li><strong>GPT-5.1 Thinking</strong> — глубокий анализ: программирование, математика, бизнес</li>
+<li><strong>Reasoning Router</strong> — сам выбирает режим работы</li>
+<li>На 45% меньше ошибок чем GPT-4o (данные OpenAI)</li>
+<li>Контекст 400 000 токенов — загружайте целые книги</li>
+</ul>
+
+<p><br></p>
+
+<p><strong>🎬 Sora 2 — генерация видео:</strong></p>
+<ul>
+<li>Видео до 10 секунд в 720p</li>
+<li>Реалистичная физика — как в реальной жизни</li>
+<li>Автоматическая озвучка — диалоги, звуки, музыка</li>
+<li>Создание из текста или картинки</li>
+<li>Функция "Cameo" — вставь себя в видео</li>
+</ul>
+
+<p><br></p>
+
+<p><strong>🎨 DALL-E 3 — изображения:</strong></p>
+<ul>
+<li>Безлимитная генерация</li>
+<li>Фотореализм, иллюстрации, логотипы</li>
+<li>Работа с текстом в картинках</li>
+</ul>
+
+<p><br></p>
+
+<p><strong>💎 Дополнительно:</strong></p>
+<ul>
+<li>Голосовой режим — диалог с AI</li>
+<li>Анализ файлов — PDF, Word, Excel, изображения</li>
+<li>Веб-поиск — актуальная информация</li>
+<li>Приоритетная скорость — без очередей</li>
+<li>5 стилей общения</li>
+</ul>
+
+<p><br></p>
+
+<p><strong>✨ Для каких задач:</strong></p>
+<ul>
+<li>💻 <strong>Программирование:</strong> код, отладка, тесты. Лидер в SWE-bench</li>
+<li>✍️ <strong>Тексты:</strong> статьи, посты, переводы на 50+ языков</li>
+<li>📹 <strong>Видео/графика:</strong> контент для соцсетей, презентации</li>
+<li>📚 <strong>Обучение:</strong> курсовые, дипломы, решение задач</li>
+<li>📊 <strong>Бизнес:</strong> планы, анализ, маркетинг</li>
+</ul>
+
+<p><br></p>
+
+<p><strong>📋 Как получить:</strong></p>
+<ol>
+<li>Напишите в сообщения</li>
+<li>Оплатите заказ</li>
+<li>Дайте email и пароль от OpenAI (или создам новый)</li>
+<li>Получите активацию через 10-15 минут</li>
+</ol>
+
+<p><br></p>
+
+<p><strong>⚠️ Это оригинал OpenAI. Остерегайтесь подделок:</strong></p>
+
+<p><em>❌ Мошенники продают:</em></p>
+<ul>
+<li>Общие аккаунты на 5-10 человек — блокируются через неделю</li>
+<li>Взломанные карты — подписка слетает через 2-3 дня</li>
+<li>"Безлимит за 500₽" — таких не существует</li>
+<li>Готовые аккаунты — ваши данные видны продавцу</li>
+</ul>
+
+<p><br></p>
+
+<p><em>✅ У меня:</em></p>
+<ul>
+<li>Подписка на ваш личный email</li>
+<li>Вы меняете пароль после активации</li>
+<li>Работает все 30 дней гарантированно</li>
+<li>Полный контроль аккаунта — только у вас</li>
+</ul>
+
+<p><em>🔍 Проверка:</em> Settings → Manage subscription → увидите дату окончания и ваш email</p>
+
+<p><br></p>
+
+<p><strong>❓ FAQ:</strong></p>
+
+<p><em>Безопасно давать данные?</em><br>
+Только активирую и выхожу. Смените пароль после.</p>
+
+<p><br></p>
+
+<p><em>Можно продлить?</em><br>
+Да. Подписка действует от 30 дней</p>
+
+<p><br></p>
+
+<p><strong>🎯 Гарантии:</strong></p>
+<ul>
+<li>Активация за 10-15 минут</li>
+<li>Официальная подписка — работает весь период</li>
+<li>Поддержка при вопросах</li>
+<li>Замена при проблемах</li>
+</ul>
+
+<p><br></p>
+
+<p>Есть вопросы? Пишите в любое время — поможем разобраться.</p>
+
+———————————————
+📋 Техническая информация:
+Артикул: РR6668-РL-0334
+Старший: Владимир Морозов`;
+
+            document.getElementById('template').value = defaultTemplate;
+        });
+    </script>
+</body>
+</html>
